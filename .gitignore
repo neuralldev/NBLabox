@@ -45,3 +45,15 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# =========================
+### JetBrains template
+
+.idea/
+*.iws
+
+# =========================
+### Composer template
+
+composer.phar
+/vendor/
