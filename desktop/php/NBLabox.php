@@ -6,7 +6,7 @@ sendVarToJS('eqType', 'NBLabox');
 $eqLogics = eqLogic::byType('NBLabox');
 ?>
 
-<div class="row" row-overflow>
+<div class="row row-overflow">
     <div class="col-lg-2 col-md-3 col-sm-4">
         <div class="bs-sidebar">
             <ul id="ul_eqLogic" class="nav nav-list bs-sidenav">
@@ -29,7 +29,7 @@ $eqLogics = eqLogic::byType('NBLabox');
                 <center>
                     <i class="fa fa-plus-circle" style="font-size : 7em;color:#94ca02;"></i>
                 </center>
-                <span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#94ca02"><center>Ajouter</center></span>
+                <span style="font-size : 1.1em;position:relative; top : 23px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#94ca02"><center>{{Ajouter}}</center></span>
             </div>
             <?php
             foreach ($eqLogics as $eqLogic) {
@@ -54,7 +54,7 @@ $eqLogics = eqLogic::byType('NBLabox');
         <form class="form-horizontal">
             <fieldset>
                 <legend>
-                    <i class="fa fa-arrow-circle-left eqLogicAction cursor" data-action="returnToThumbnailDisplay"></i> {{Général}}  
+                    <i class="fa fa-arrow-circle-left eqLogicAction cursor" data-action="returnToThumbnailDisplay"></i> {{Général}}
                     <i class='fa fa-cogs eqLogicAction pull-right cursor expertModeVisible' data-action='configure'></i>
                 </legend>
                 <div class="form-group">
@@ -77,38 +77,38 @@ $eqLogics = eqLogic::byType('NBLabox');
                             ?>
                         </select>
                     </div>
-                </div>            
+                </div>
                 <div class="form-group">
                     <label class="col-sm-3 control-label" >{{Etat}}</label>
                     <div class="col-sm-3">
-                        <input type="checkbox" class="eqLogicAttr bootstrapSwitch" data-label-text="{{Activer}}" data-l1key="isEnable" checked />
-                        <input type="checkbox" class="eqLogicAttr bootstrapSwitch" data-label-text="{{Visible}}" data-l1key="isVisible" checked />
+                        <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Activer}}</label>
+                        <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
                     </div>
                 </div>
                <div class="form-group">
                 <label class="col-sm-2 control-label">{{Catégorie}}</label>
-                <div class="col-sm-8"> 
+                <div class="col-sm-8">
                     <?php
                     foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
                             echo '<label class="checkbox-inline">';
                             echo '<input type="checkbox" class="eqLogicAttr" data-l1key="category" data-l2key="' . $key . '" />' . $value['name'];
                             echo '</label>';
                     }?>
-                    </div>                
+                    </div>
                </div>
                 <legend><i class="fa fa-wrench"></i>  {{Configuration}}</legend>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">{{Affichage}}</label>
                     <div class="col-sm-2">
-                        <input type="checkbox" class="eqLogicAttr bootstrapSwitch" data-label-text="{{Complet}}" data-l1key="configuration" data-l2key="isDisplay" checked />
+                        <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="isDisplay" checked/>{{Complet}}</label>
                     </div>
-                </div> 
+                </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">{{Adresse IP}}</label>
                     <div class="col-sm-2">
                         <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="laboxAddr" placeholder="{{Adresse IP de la box}}"/>
                     </div>
-                </div> 
+                </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">{{Compte de connexion}}</label>
                     <div class="col-sm-2">
@@ -123,7 +123,7 @@ $eqLogics = eqLogic::byType('NBLabox');
         </form>
 
 
-       
+
             <legend>{{Commandes}}</legend>
             <a class="btn btn-success btn-sm cmdAction" data-action="add"><i class="fa fa-plus-circle"></i> {{Commande}}</a><br/><br/>
             <table id="table_cmd" class="table table-bordered table-condensed">
@@ -145,7 +145,7 @@ $eqLogics = eqLogic::byType('NBLabox');
     </fieldset>
 </form>
 
-        
+
     </div>
 </div>
 
