@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script type="text/javascript" src="menu/jquery.min.js"></script>
+<title>Mon Modem</title>
+<style type="text/css">
+<!--
+html {
+    height: 100%;
+}
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+.centrer {
+	text-align: center;
+}
+.fontestableau {
+	font-family: Helvetica, sans-serif;
+	font-size: 12px;
+	color: #666;
+}
+.fontestableau {
+	text-align: center;
+}
+.agauche {
+	text-align: left;
+}
+.adroite {
+	text-align: right;
+}
+
+#page-table {
+
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+a {
+	color: #333;
+	text-decoration: underline;
+}
+#page-td {
+    height: 100%;
+    padding: 0;
+    vertical-align: middle;
+}
+div#global {
+}
+.fontestableau1 {	font-family: Helvetica, sans-serif;
+	font-weight: bold;
+	font-size: 12px;
+	color: #666;
+}
+
+.num-button2
+{
+	height: auto;
+	font-family: Tahoma, Arial, Helvetica, Sans-Serif;
+	font-size: 11px;
+	font-style: normal;
+	white-space: nowrap;
+	padding: 0 9px !important;
+	color: #000 !important;
+	background-color:#CCC;
+	font-weight: normal;
+	font-variant: normal;
+	line-height: normal;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-style: solid;
+	border-right-style:solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #666;
+	border-right-color: #666;
+	border-bottom-color: #666;
+	border-left-color: #666;
+	border-radius:3px;
+	text-align: center;
+}
+.num-button2:focus,.num-button2:visited,.num-button2:hover
+{
+	height: auto;
+	font-family: Tahoma, Arial, Helvetica, Sans-Serif;
+	font-size: 11px;
+	font-style: normal;
+	white-space: nowrap;
+	padding: 0 9px !important;
+	color: #000 !important;
+	background-color:#999;
+	font-weight: normal;
+	font-variant: normal;
+	line-height: normal;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-style: solid;
+	border-right-style:solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #333;
+	border-right-color: #333;
+	border-bottom-color: #333;
+	border-left-color: #333;
+	border-radius:3px;
+	text-align: center;
+}
+-->
+</style>
+<script type="text/javascript">
+function myDisableButton(obj)
+{
+    obj.onclick = Function("return false;");
+    return true;
+}
+
+var projver = '62-1';
+$(document).ready(function() {
+    if ((projver == '42-1_SFR') || (projver == '52-1_SFR') || (projver == '62-1_SFR'))
+    {
+    	$("p.centrer > img").css("width","100");
+    	$("p.centrer > img").css("height","100");
+    }
+    else if(projver == "FAST3686_L2VPN") 
+    {
+    	$("p.centrer > img").css("width","600");
+    	$("p.centrer > img").css("height","183");
+    }
+    
+    $("#checkPWD").one("click", function(){window.document.login.submit();});
+});
+</script>
+</head>
+
+<body>
+<p class="centrer"><img src="images/logo-num-HD.gif" width="700" height="139" alt="logo" /></p>
+<p class="centrer">&nbsp; </p>
+<form method="post" action="/goform/login" name="login">
+<table id="page-table"><tr>
+      <td id="page-td"><table width="700" border="0" align="center" cellpadding="5" cellspacing="5">
+        <tr>
+          <td width="45%" valign="middle" class="adroite"><span class="fontestableau">Identifiant</span></td>
+          <td align="left" valign="middle">
+            <input name="loginUsername" type="text" size="30" />
+          </td>
+        </tr>
+        <tr>
+          <td width="45%" valign="middle" class="adroite"><span class="fontestableau">Mot de passe</span></td>
+          <td align="left" valign="middle"><input name="loginPassword" type="password" size="30" maxlength="63" /></td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center" valign="middle" class="centrer"><p><br />
+            <input type="button" class="num-button2" value="OK" id="checkPWD" onClick="return myDisableButton(this);" />
+          </p></td>
+        </tr>
+      </table>
+      </form>
+      <p class="fontestableau">L'identifiant et le mot de passe par défaut se trouvent sous votre modem.      </p>
+      </td></tr>
+</body>
+</html>

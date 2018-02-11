@@ -1,0 +1,353 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, no-store, must-revalidate">
+	<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+	<META HTTP-EQUIV="Expires" CONTENT="0">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script type="text/javascript" src="menu/NumLanguageFr.js"></script>
+    <script type="text/javascript" src="menu/jquery.min.js"></script>
+	<title>Mon Modem</title>
+<style type="text/css">
+<!--
+html {
+    height: 100%;
+}
+body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+.centrer {
+	text-align: center;
+}
+
+#page-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+td {
+    vertical-align: middle;
+}
+
+.fontestableau1 {
+	font-family: Helvetica, sans-serif;
+	font-size: 12px;
+	color: #000;
+	text-align: left;
+}
+
+.num-button2
+{
+	height: auto;
+	font-family: Tahoma, Arial, Helvetica, Sans-Serif;
+	font-size: 11px;
+	font-style: normal;
+	white-space: nowrap;
+	padding: 0 9px !important;
+	color: #000 !important;
+	background-color:#CCC;
+	font-weight: normal;
+	font-variant: normal;
+	line-height: normal;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-style: solid;
+	border-right-style:solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #666;
+	border-right-color: #666;
+	border-bottom-color: #666;
+	border-left-color: #666;
+	border-radius:3px;
+	text-align: center;
+}
+.num-button2:focus,.num-button2:visited,.num-button2:hover
+{
+	height: auto;
+	font-family: Tahoma, Arial, Helvetica, Sans-Serif;
+	font-size: 11px;
+	font-style: normal;
+	white-space: nowrap;
+	padding: 0 9px !important;
+	color: #000 !important;
+	background-color:#999;
+	font-weight: normal;
+	font-variant: normal;
+	line-height: normal;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-style: solid;
+	border-right-style:solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #333;
+	border-right-color: #333;
+	border-bottom-color: #333;
+	border-left-color: #333;
+	border-radius:3px;
+	text-align: center;
+}
+// -->
+</style>
+<script type="text/javascript">
+<!--
+
+function pad(number, length){
+    var str = "" + number;
+    while (str.length < length) {
+        str = '0'+str;
+    }
+    return str;
+}
+
+var offset = new Date().getTimezoneOffset();
+offset = ((offset<0? '+':'-')+ // Note the reversed sign!
+          pad(parseInt(Math.abs(offset/60)), 2)+
+          pad(Math.abs(offset%60), 2));
+
+function PntTime(TimeStr)
+{
+  var logTimeSec = parseInt(TimeStr);
+  if (logTimeSec <= 946684800)   //MIDNIGHT_JAN_01_2000
+  {
+    document.write(TimeNotEstablished);
+  }
+  else
+  {
+    var logDay = new Date();
+    logDay.setTime( logTimeSec*1000 );
+    document.write(logDay.toLocaleString());
+    document.write(" GMT"+offset);
+  } 	
+}
+    
+var projver = '62-1';
+
+var wifiStatus = { "s_wifi2GSsid":"Mon_WIFI_ID_2G",
+"s_wifi5GSsid":"Mon_WIFI_ID_5G",
+"i_wifi2GEnable":1, 
+"i_wifi5GEnable":1, 
+"i_wifi2GHotspotEnable":0, "s_wifi2GHotspotSsid":"NULL" };
+
+var wifiGuestStatus = {"s_wifi2GGuestSsid":"Mon_WIFI_ID_Invite", "c_wifi2GGuestEnable":EnableStr };
+
+var L2vpnData = {'cVoip':'1'};
+
+function set_wifi_status() {
+    $("#wifi2GStatus").text("["+wifiStatus.s_wifi2GSsid+"] " + ((wifiStatus.i_wifi2GEnable==0)?DisableStr:EnableStr));
+    if(projver == "FAST3686") {
+        $("#wifiHotspotStatus").text("["+wifiStatus.s_wifi2GHotspotSsid+"] " + ((wifiStatus.i_wifi2GHotspotEnable==0)?DisableStr:EnableStr));
+    }
+    if (projver != "42-1") {
+        $("#wifi5GStatus").text("["+wifiStatus.s_wifi5GSsid+"] " + ((wifiStatus.i_wifi5GEnable==0)?DisableStr:EnableStr));
+    }
+    
+    $("#wifiGuestStatus").text("["+wifiGuestStatus.s_wifi2GGuestSsid+"] " + wifiGuestStatus.c_wifi2GGuestEnable);
+}
+$(document).ready(function() {
+    if (projver != "FAST3686_L2VPN")
+        set_wifi_status();
+
+    if(projver == "FAST3686_L2VPN") {
+        $(".l2vpn").hide();
+        
+    	$("p.centrer > img").css("width","600");
+    	$("p.centrer > img").css("height","183");
+    	
+    	if(L2vpnData.cVoip == "1")
+            $(".l2vpnVoip").hide();
+
+        var myRow = "<tr><td align='right'>"+ MaxDownstream +   ":</td><td align='left'>"+ L2vpnData.MaxDown +   "</td></tr>"
+                   +"<tr><td align='right'>"+ MaxUpstream +     ":</td><td align='left'>"+ L2vpnData.MaxUp +     "</td></tr>"
+                   +"<tr><td align='right'>"+ VoipDownstream +  ":</td><td align='left'>"+ L2vpnData.VoipDowns + "</td></tr>"
+                   +"<tr><td align='right'>"+ VoipUpstream +    ":</td><td align='left'>"+ L2vpnData.VoipUp +    "</td></tr>"
+                   +"<tr><td align='right'>"+ PremiumDownstream+":</td><td align='left'>"+ L2vpnData.PremiumDown+"</td></tr>"
+                   +"<tr><td align='right'>"+ PremiumUpstream + ":</td><td align='left'>"+ L2vpnData.PremiumUp + "</td></tr>";
+        $("#l2vpnData tr:last").after(myRow);
+        
+    } else if(projver == "42-1") {
+        $("#wifi5Gtr").hide();
+    } else {
+        $("#wifi5Gtr").show();
+        if ((projver == '42-1_SFR') || (projver == '52-1_SFR') || (projver == '62-1_SFR'))
+        {
+        	$("p.centrer > img").css("width","100");
+        	$("p.centrer > img").css("height","100");
+        }
+    }
+
+    if(projver == "FAST3686") {
+        $("#wifiHotspotTr").show();
+    } else {
+        $("#wifiHotspotTr").hide();
+    }
+});
+
+// -->
+</script>
+</head>
+
+<body>
+<p class="centrer"><img src="images/logo-num-HD.gif" width="700" height="139" alt="logo" /></p>
+
+<table id="page-table" width="700">
+	<tr><td>
+    	<br />
+        <form action="/goform/WebUiLanguageSelect" method="post">
+          <span class="fontestableau1"><script type="text/javascript">document.write(Language);</script></span>
+          <span class="fontestableau1"><select name="WebUiLanguageSelected" onChange=submit();>
+<option value="0"  ><script type="text/javascript">document.write(LanguageEnglish);</script></option>
+<option value="1" SELECTED ><script type="text/javascript">document.write(LanguageFrench);</script></option>
+</select>
+</span>
+        </form>
+        <br />
+	</td></tr>
+            
+	<tr><td>
+        <input type="button" class="num-button2" onclick="window.location.href='config.html'" value="Configurer votre modem"/>
+        <br /><br />
+        
+        <table width="680" border="0" align="center" cellpadding="0" cellspacing="10" class="fontestableau1">
+            <tr>
+              <td align="right" width="300">Mode:&nbsp;</td>
+              <td align="left"><script type="text/javascript">document.write(Router);</script></td>
+            </tr>
+            <tr class="l2vpn">
+              <td align="right">DHCP:&nbsp;</td>
+              <td align="left"><script type="text/javascript">document.write(EnableStr);</script></td>
+            </tr>
+            <tr class="l2vpn">
+              <td align="right">Votre adresse IP:&nbsp;</td>
+              <td align="left">81.255.255.25</td>
+            </tr>
+            <tr class="l2vpn">
+              <td align="right">Votre masque de sous réseau:&nbsp;</td>
+              <td align="left">255.255.252.0</td>
+            </tr>
+            <tr class="l2vpn">
+              <td align="right">Votre passerelle:&nbsp;</td>
+              <td align="left">81.65.255.1</td>
+            </tr>
+            <tr class="l2vpn">
+              <td align="right">Vos DNS:&nbsp;</td>
+              <td align="left"> 89.2.0.1 et 89.2.0.2 </td>
+            </tr>
+        </table>
+    </td></tr>
+
+    <tr><td>
+        <table width="680" id="l2vpnData" border="0" align="center" cellpadding="0" cellspacing="10" class="fontestableau1">
+            <tr>
+              <td colspan="2"><hr color="#666" size="2" /></td>
+            </tr>
+            <tr>
+              <td align="right" width="300">Statut Réseau:&nbsp;</td>
+              <td align="left"><script type="text/javascript">document.write(Connected);</script></td>
+            </tr>
+            <tr class="l2vpn">
+              <td align="right">Débit Descendant maximum:&nbsp;</td>
+              <td align="left">100Mbps</td>
+            </tr>
+            <tr class="l2vpn">
+              <td align="right">Débit Montant maximum:&nbsp;</td>
+              <td align="left">5Mbps</td>
+            </tr>
+        </table>
+    </td></tr>
+
+    <tr class="l2vpnVoip"><td>
+        <table width="680" border="0" align="center" cellpadding="0" cellspacing="10" class="fontestableau1">
+            <tr>
+              <td colspan="2"><hr color="#666" size="2" /></td>
+            </tr>
+            <tr class="l2vpn">
+              <td align="right" id="wifi2GDes" width="300">Statut Wi-Fi 2,4 GHz:&nbsp;</td>
+              <td align="left" id="wifi2GStatus"> </td>
+            </tr>
+            
+            <tr class="l2vpn" id="wifi5Gtr" style="display: none;">
+              <td align="right" id="wifi5GDes">Statut Wi-Fi 5 GHz:&nbsp;</td>
+              <td align="left" id="wifi5GStatus"> </td>
+            </tr>
+            
+            <tr class="l2vpn">
+              <td align="right" id="wifiGuestDes">Statut Wi-Fi Invité 2,4 GHz:&nbsp;</td>
+              <td align="left" id="wifiGuestStatus"> </td>
+            </tr>
+            <tr class="l2vpn" id="wifiHotspotTr">
+              <td align="right">Statut Wi-Fi communautaire:&nbsp;</td>
+              <td align="left" id="wifiHotspotStatus"> </td>
+            </tr>
+            <tr>
+              <td align="right">Statut Téléphonie:&nbsp;</td>
+              <td  align="left">
+                Etat Ligne 1: <script type="text/javascript">document.write(OnHook);</script> <br>
+                Etat Ligne 2: <script type="text/javascript">document.write(LineDisConnected);</script>
+              </td>
+            </tr>
+        </table>
+    </td></tr>
+
+    <tr><td>
+        <table width="680" border="0" align="center" cellpadding="0" cellspacing="10" class="fontestableau1">
+            <tr>
+              <td colspan="2"><hr color="#666" size="2" /></td>
+            </tr>
+            <tr>
+              <td align="right" width="300">Conforme au norme standard:&nbsp;</td>
+              <td align="left">EuroDOCSIS 3.0</td>
+            </tr>
+            <tr>
+              <td align="right">Version matériel:&nbsp;</td>
+              <td align="left">2.0</td>
+            </tr>
+            <tr>
+              <td align="right">Version logiciel:&nbsp;</td>
+              <td align="left">NCC_1.4.0</td>
+            </tr>
+            <tr>
+              <td align="right">Adresse MAC Cable:&nbsp;</td>
+              <td align="left">44:e9:xx:e3:xx:b0</td>
+            </tr>
+            <tr>
+              <td align="right">Adresse MAC du périphérique:&nbsp;</td>
+              <td align="left">44:e9:dd:xx:45</td>
+            </tr>
+            <tr>
+              <td align="right">Certificat CM:&nbsp;</td>
+              <td align="left"><script type="text/javascript">document.write(CmCertificateInstalled);</script></td>
+            </tr>
+        </table>
+    </td></tr>
+
+    <tr><td>
+        <table width="680" border="0" align="center" cellpadding="0" cellspacing="10" class="fontestableau1">
+            <tr>
+              <td colspan="2"><hr color="#666" size="2" /></td>
+            </tr>
+            <tr>
+              <td align="right" width="300">Temps depuis la dernière initialisation:&nbsp;</td>
+              <td align="left">0 <script type="text/javascript">document.write(SystemUpDays);</script> 00h:04m:40s</td>
+            </tr>
+            <tr>
+              <td align="right">Heure:&nbsp;</td>
+              <td align="left"><script type="text/javascript">PntTime(1517506756);</script>
+</td>
+            </tr>
+        </table>
+			
+	</td></tr>
+</table>
+
+</body>
+</html>

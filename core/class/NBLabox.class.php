@@ -1,5 +1,5 @@
 <?php
-            
+
 /* This file is part of Jeedom.
  *
  * Jeedom is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ class CurlRequest {
 
     /**
      * Init curl session
-     * 
+     *
      * $params = array('url' => '',
      *                    'host' => '',
      *                   'header' => '',
@@ -34,12 +34,12 @@ class CurlRequest {
      *                   'cookie' => '',
      *                   'post_fields' => '',
      *                    ['login' => '',]
-     *                    ['password' => '',]      
+     *                    ['password' => '',]
      *                   'timeout' => 0
      *                   );
      */
     public function __construct($params) {
-        $options = array( 
+        $options = array(
 	    CURLOPT_RETURNTRANSFER => true, // to return web page
             CURLOPT_HEADER         => true, // to return headers in addition to content
             CURLOPT_FOLLOWLOCATION => true, // to follow redirects
@@ -58,19 +58,19 @@ class CurlRequest {
         );
         $this->ch = curl_init($params['url']);
         curl_setopt_array( $this->ch, $options );
- 
+
         if ($params['port'])
             curl_setopt($this->ch, CURLOPT_PORT, $params['port']);
 
         if ($params['method'] == "POST") {
             curl_setopt($this->ch, CURLOPT_POST, TRUE);
             curl_setopt($this->ch, CURLOPT_POSTFIELDS, $params['post_fields']);
-        }        
+        }
         if ($params['referer'])
             curl_setopt($this->ch, CURLOPT_REFERER, $params['referer']);
 
         }
-            
+
     /**
      * Execute curl request
      *
@@ -97,7 +97,7 @@ class CurlRequest {
             $doc = new DOMDocument();
             if (@$doc->loadHTML($response) === true) {
                 return new DOMXpath($doc);
-            }  
+            }
         }
         $result['http_code'] = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
         $result['last_url'] = curl_getinfo($this->ch, CURLINFO_EFFECTIVE_URL);
@@ -132,7 +132,7 @@ class LaBox {
             unlink($this->param['cookiejar'] );
         }
         catch(Exception $e) {
-            
+
         }
     }
 
@@ -183,18 +183,18 @@ class LaBox {
                     $result = $this->fetchresult;
                 if ($result == FALSE) {
                     log::add('NBLabox', 'debug', 'page found on '.$host." but no readable content");
-                    return FALSE; // if there is no readable content 
+                    return FALSE; // if there is no readable content
                 }
 // now seach for specific numericable information in it such as login form
                 if (strpos($result['body'], "logo-num-HD") == FALSE) {
                     log::add('NBLabox', 'debug', 'page found on '.$host." but no numericable signature present ->".$result['body']);
                     return FALSE;
-                } 
+                }
                 return $this->fetchresult;
             } else
                 log::add('NBLabox', 'debug', 'cant find ressource '.$host.':'.$this->param['port']);
         return FALSE;
-        
+
     }
 
     public function getPage($url, $cookie, $referer='', $port=80) {
@@ -207,12 +207,12 @@ class LaBox {
             'referer' => $referer,
             'cookie' =>1,
             'cookiejar' => $cookie,
-            'post_fields' => '', 
-            'timeout' => 20 
+            'post_fields' => '',
+            'timeout' => 20
         );
-        log::add('NBLabox', 'debug', __METHOD__ . ' get page '.$url.' referer='.$referer. ' port='.$port);        
+        log::add('NBLabox', 'debug', __METHOD__ . ' get page '.$url.' referer='.$referer. ' port='.$port);
         $getpage = new CurlRequest($getparams);
-        return  $getpage->exec();        
+        return  $getpage->exec();
     }
 
     public function postPage($url, $postparams, $cookie, $referer ='', $port=80) {
@@ -225,33 +225,33 @@ class LaBox {
             'referer' => $referer,
             'cookie' =>1,
             'cookiejar' => $cookie,
-            'post_fields' => $postparams, 
-            'timeout' => 20 
+            'post_fields' => $postparams,
+            'timeout' => 20
         );
-        log::add('NBLabox', 'debug', __METHOD__ . ' post page '.$url.' referer='.$referer. ' port='.$port);        
+        log::add('NBLabox', 'debug', __METHOD__ . ' post page '.$url.' referer='.$referer. ' port='.$port);
         $getpage = new CurlRequest($getparams);
         return $getpage->exec();
     }
-       
+
     public function doLogin($login, $password) {
         $this->doLogout();
         $urlitems = parse_url($this->param['url']);
 //         get basic url from current request
         log::add('NBLabox', 'debug', __METHOD__ . ' attempt login POST '.  'https://' . $urlitems['host'] . '/goform/login on port '.$this->param['port']);
-        $result = $this->postPage('https://' . $urlitems['host'] . '/goform/login',  
-                'loginUsername=' . $login . '&loginPassword=' .  urlencode($password), 
-                $this->param['cookiejar'], 
+        $result = $this->postPage('https://' . $urlitems['host'] . '/goform/login',
+                'loginUsername=' . $login . '&loginPassword=' .  urlencode($password),
+                $this->param['cookiejar'],
                 'config.html',$this->param['port']);
 
         log::add('NBLabox', 'debug', __METHOD__ . ' returned from login '.  json_encode($result));
 
-        $notloggedin = strpos($result['header'], "Location: https://".$urlitems['host']."/login.html");      
+        $notloggedin = strpos($result['header'], "Location: https://".$urlitems['host']."/login.html");
         if ($notloggedin !== false) {
             log::add('NBLabox', 'warning', __METHOD__ . ' wrong credential, not logged in');
             $this->isloggeddIn =FALSE;
             return FALSE;
         }
-        $alreadyconnected = strpos($result['body'], 'TRY AGAIN');     
+        $alreadyconnected = strpos($result['body'], 'TRY AGAIN');
         if ($alreadyconnected !== false) {
             log::add('NBLabox', 'warning', __METHOD__ . ' a user is already logged in, cannot login');
             $this->isloggeddIn =FALSE;
@@ -266,8 +266,8 @@ class LaBox {
             log::add('NBLabox', 'warning', __METHOD__ . ' cannot login, aborting');
             $this->isloggeddIn =FALSE;
             return FALSE;
-        } 
-        
+        }
+
 //<form method="post" action="/goform/login" name="login">
 //<input name="loginUsername" type="text" size="30" />
 //<input name="loginPassword" type="password" size="30" maxlength="63" />
@@ -297,7 +297,7 @@ class LaBox {
             return FALSE;
         //log::add('NBLabox', 'debug', __METHOD__ . ' logout '.json_encode($result, true));
         $this->isloggeddIn = FALSE;
-        log::add('NBLabox', 'debug', __METHOD__ . ' logout page returned '.$result['http_code']);        
+        log::add('NBLabox', 'debug', __METHOD__ . ' logout page returned '.$result['http_code']);
         RETURN TRUE;
     }
 
@@ -306,15 +306,15 @@ class LaBox {
 //        $nbl = new NumericableBox($this->param['ip'], $this->login, $this->password, 443);
 //        $result = $nbl->reboot();
         $this->doLogin($this->login, $this->password);
-        log::add('NBLabox', 'debug', __METHOD__ . ' reset modem attempt '.json_encode($result, true));        
-        $result = $this->postPage('https://' . $urlitems['host'] . '/goform/WebUiOnlyReboot',  '', $this->param['cookiejar'], 'config.html',$this->param['port']);            
-        log::add('NBLabox', 'debug', __METHOD__ . ' reset modem returns '.json_encode($result, true));        
+        log::add('NBLabox', 'debug', __METHOD__ . ' reset modem attempt '.json_encode($result, true));
+        $result = $this->postPage('https://' . $urlitems['host'] . '/goform/WebUiOnlyReboot',  '', $this->param['cookiejar'], 'config.html',$this->param['port']);
+        log::add('NBLabox', 'debug', __METHOD__ . ' reset modem returns '.json_encode($result, true));
         return TRUE;
-        
+
 //<form action="/goform/WebUiOnlyReboot" method="post">
 //<span class="num-button-wrapper">
 //<span class="l"> </span>
-//<span class="r"> </span>                                              
+//<span class="r"> </span>
 //<input type="submit" class="num-button" value="Redémarrer votre modem" align="middle" onclick="return rebootConfirm();" />
 //</span>
 //</form>
@@ -444,7 +444,7 @@ class NBLabox extends eqLogic {
      */
     public static function cronDayly() {
         foreach (self::byType('NBLabox') as $neurall) {
-            if ($neurall->getIsEnable() == 1) 
+            if ($neurall->getIsEnable() == 1)
             if ($neurall->getConfiguration('laboxAddr') != '') {
                 log::add('NBLabox', 'debug', 'Pull CronDayly pour neurall api');
                 $neurall->updateInfo();
@@ -452,9 +452,9 @@ class NBLabox extends eqLogic {
                 $neurall->toHtml('mobile');
                 $neurall->refreshWidget();
             }
-            }        
+            }
     }
-    
+
     /*
      * Fonction exécutée automatiquement toutes les heures par Jeedom
       public static function cronHourly() {
@@ -463,7 +463,7 @@ class NBLabox extends eqLogic {
      */
     public static function cronHourly() {
         foreach (self::byType('NBLabox') as $neurall) {
-            if ($neurall->getIsEnable() == 1) 
+            if ($neurall->getIsEnable() == 1)
             if ($neurall->getConfiguration('laboxAddr') != '') {
                 log::add('NBLabox', 'debug', 'Pull CronHourly pour neurall api');
                 $neurall->updateInfo();
@@ -504,7 +504,7 @@ class NBLabox extends eqLogic {
             $laboxip = $this->getConfiguration('laboxAddr');
             log::add('NBLabox', 'debug', __METHOD__ . " reset : addr found is [" . $laboxip . ']');
             if ($laboxip == "")
-                return;         
+                return;
             $url = 'https://' . $laboxip;
             log::add('NBLabox', 'debug', __METHOD__ . "  query [" . $url. ']');
             $params = array(
@@ -533,7 +533,7 @@ class NBLabox extends eqLogic {
 //                if ($result) $laBox->doLogout();
                 $feedbackCmd->event($result);
             }
-            
+
            log::add('NBLabox', 'debug', __METHOD__ . ' feedback done '.  json_encode($result, true));
         } catch (Exception $e) {
             log::add('NBLabox', 'debug', __METHOD__ . " update info failed " . $e->getMessage());
@@ -541,7 +541,7 @@ class NBLabox extends eqLogic {
         }
         return;
     }
-    
+
     public function updateInfo() {
         try {
             log::add('NBLabox', 'debug', __METHOD__ . " get status called");
@@ -549,7 +549,7 @@ class NBLabox extends eqLogic {
             log::add('NBLabox', 'debug', __METHOD__ . "  addr found is [" . $labox . ']');
 
             if ($labox == "")
-                return; 
+                return;
             $url = 'https://' . $labox;
             log::add('NBLabox', 'debug', __METHOD__ . "  query [" . $url. ']');
             $params = array(
@@ -566,22 +566,22 @@ class NBLabox extends eqLogic {
             $laBox = new LaBox($params);
             $detect = $laBox->autoDetect();
 
-            if ($detect == FALSE) 
+            if ($detect == FALSE)
                 $feedback = "ko";
             else {
                 $feedback = "normal";
                 $feedbackCmd1 = $this->getCmd(null, 'laboxip');
                 $feedbackCmd1->event(($currentip= $laBox->getPublicIPAddress()));  // enregistre l'adresse ip courante pour la comparer à la précédente
-                
+
                 $feedbackCmd2 = $this->getCmd(null, 'laboxgw');
                 $feedbackCmd2->event($laBox->getDefaultGateway());
-                
+
                 $feedbackCmd3 = $this->getCmd(null, 'laboxhwver');
                 $feedbackCmd3->event($laBox->getHWVer());
-                
+
                 $feedbackCmd4 = $this->getCmd(null, 'laboxswver');
                 $feedbackCmd4->event($laBox->getSWVer());
-                
+
                 $feedbackCmd5 = $this->getCmd(null, 'laboxmask');
                 $feedbackCmd5->event($laBox->getMask());
 
@@ -600,10 +600,10 @@ class NBLabox extends eqLogic {
                 $feedbackCmd10 = $this->getCmd(null, 'laboxprevip');
                 $previp = $feedbackCmd10->execCmd(); // récupère l'adresse ip précédente
                 $feedbackCmd10->event($currentip); // met à jour a valeur avec celle actuelle
-                
+
                 if( $previp != $currentip) { // si l'adresse ip a changé, il faut alerter l'utilisateur et régler le DDNS éventuellement
-                   log::add('NBLabox', 'info',"l'adresse ip publique de la box a changé ($currentip)");       
-                
+                   log::add('NBLabox', 'info',"l'adresse ip publique de la box a changé ($currentip)");
+
                 }
             }
             $feedbackCmd = $this->getCmd(null, 'laboxetat');
@@ -642,15 +642,15 @@ class NBLabox extends eqLogic {
             $config->setDisplay('generic_type','GENERIC').
             $config->save();
         } else
-            log::add('NBLabox', 'debug', __METHOD__ . " ".$cmdid." already exists");    
+            log::add('NBLabox', 'debug', __METHOD__ . " ".$cmdid." already exists");
     }
-    
+
     public function postInsert() {
 
         log::add('NBLabox', 'debug', __METHOD__ . " equipment name=" . $this->getName() . " laboxAddr=" . $this->getConfiguration('laboxAddr')
                 . " laboxLogin=" . $this->getConfiguration('laboxLogin')
                 . " laboxPassword=" . $this->getConfiguration('laboxPassword'));
-        
+
         $this->createCmd('laboxetat', 'Etat Labox');
         $this->createCmd('laboxip', 'IP Labox');
         $this->createCmd('laboxmask', 'Masque Labox');
@@ -662,13 +662,13 @@ class NBLabox extends eqLogic {
         $this->createCmd('laboxdns2', 'DNS secondaire');
         $this->createCmd('laboxdownload', 'Debit');
         $this->createCmd('laboxupload', 'Debit montant');
-        
+
         $refresh = $this->getCmd(null, 'refresh');
         if (!is_object($refresh)) {
             $refresh = new NBLaboxCmd();
             $refresh->setName(__('Rafraichir', __FILE__));
         }
-// bouton refresh 
+// bouton refresh
         $refresh->setEqLogic_id($this->getId());
         $refresh->setLogicalId('refresh');
         $refresh->setType('action');
@@ -717,7 +717,7 @@ class NBLabox extends eqLogic {
         if (!$this->getId()) // un appel sans ID sort immédiatement sans mise à jour
             return;
         $this->updateInfo();
-        // return; 
+        // return;
         $this->toHtml('dashboard');
         $this->toHtml('mobile');
         $this->refreshWidget();
@@ -758,24 +758,26 @@ class NBLabox extends eqLogic {
                 . " laboxPassword=" . $this->getConfiguration('laboxPassword'));
     }
 
-    /*
-     * Non obligatoire mais permet de modifier l'affichage du widget si vous en avez besoin */
+    /**
+     * Non obligatoire mais permet de modifier l'affichage du widget.
+     * {@inheritDoc}
+     */
+    public function toHtml($version = 'dashboard')
+    {
+        log::add('NBLabox', 'debug', __METHOD__ . " update widget code for " . $version);
+        $version = jeedom::versionAlias($version);
+        $replace = $this->preToHtml($version);
+        if (!is_array($replace)) {
+            return $replace;
+        }
 
-    public function toHtml($_version = 'dashboard') {
-        log::add('NBLabox', 'debug', __METHOD__ . " update widget code for " . $_version);
-        $replace = array(
-            '#name#' => $this->getName(),
-//            '#id#' => $this->getId(),
-            '#background_color#' => $this->getBackgroundColor(jeedom::versionAlias($_version)),
-            '#eqLink#' => $this->getLinkToConfiguration(),
-            '#laboxAddr#' => $this->getConfiguration('laboxAddr'),
-            '#laboxIP#' => $this->getConfiguration('laboxIP')
-        );
-        log::add('NBLabox', 'debug', __METHOD__ . " update widget code replace initialized");
+        $replace['#laboxAddr#'] = $this->getConfiguration('laboxAddr');
+        $replace['#laboxIP#'] = $this->getConfiguration('laboxIP');
+
         foreach ($this->getCmd() as $cmd) {
             if ($cmd->getType() == 'info') {
                 $value = $cmd->execCmd();
-            log::add('NBLabox', 'debug', __METHOD__ . " iterate for id=".$cmd->getLogicalId()." name=".$cmd->getName()." val=".$value);
+                log::add('NBLabox', 'debug', __METHOD__ . " iterate for id=" . $cmd->getLogicalId() . " name=" . $cmd->getName() . " val=" . $value);
                 $replace['#' . $cmd->getLogicalId() . '_history#'] = '';
                 $replace['#' . $cmd->getLogicalId() . '#'] = $value;
                 $replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
@@ -787,56 +789,31 @@ class NBLabox extends eqLogic {
                 $replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
             }
         }
-        $refresh = $this->getCmd(null, 'refresh');
-        if (is_object($refresh)) {
-            log::add('NBLabox', 'debug', __METHOD__ . " update widget code refresh id=".$refresh->getId());
-            $replace['#refresh_id#'] = $refresh->getId();
-            $replace['#uid#'] = $refresh->getId();
-        }
-        $html = template_replace($replace, getTemplate('core', $_version, 'eqlogic', 'NBLabox'));
-        log::add('NBLabox', 'debug', __METHOD__ . " update widget code return html");
+
+        $html = template_replace($replace, getTemplate('core', $version, 'eqlogic', 'NBLabox'));
+        $html = $this->postToHtml($version, $html);
         return $html;
     }
-
-    /*     * **********************Getteur Setteur*************************** */
 }
 
-class NBLaboxCmd extends cmd {
-    /*     * *************************Attributs****************************** */
-
-
-    /*     * ***********************Methode static*************************** */
-
-
-    /*     * *********************Methode d'instance************************* */
-
-    /*
-     * Non obligatoire permet de demander de ne pas supprimer les commandes même si elles ne sont pas dans la nouvelle configuration de l'équipement envoyé en JS
-      public function dontRemoveCmd() {
-      return true;
-      }
-     */
-
-    public function execute($_options = array()) {
-        $cmd = $this->getLogicalId() ;
-        log::add('NBLabox', 'debug', __METHOD__ . " entered, running cmd=".$cmd);
+class NBLaboxCmd extends cmd
+{
+    /** {@inheritDoc} */
+    public function execute($options = array())
+    {
+        $cmd = $this->getLogicalId();
+        log::add('NBLabox', 'debug', __METHOD__ . " entered, running cmd=" . $cmd);
         switch ($cmd) {
             case "refresh":
                 $eqLogic = $this->getEqLogic();
                 $eqLogic->updateInfo();
-                $eqLogic->toHtml('dashboard');
-                $eqLogic->toHtml('mobile');
                 $eqLogic->refreshWidget();
-                break;     $cmd = $this->getLogicalId() ;
+                break;
             case 'reboot':
                 $eqLogic = $this->getEqLogic();
                 $eqLogic->resetModem();
                 break;
-  
+
         }
     }
-
-    /*     * **********************Getteur Setteur*************************** */
 }
-
-?>
