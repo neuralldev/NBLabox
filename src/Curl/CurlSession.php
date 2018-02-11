@@ -32,7 +32,7 @@ class CurlSession implements CurlSessionInterface
         $requestCurlOptions = $request->getOptions();
 
         curl_reset($this->hCurl);
-        curl_setopt_array($this->hCurl, $requestCurlOptions + CurlSession::DEFAULT_CURL_OPTIONS);
+        curl_setopt_array($this->hCurl, CurlSession::DEFAULT_CURL_OPTIONS + $requestCurlOptions);
 
         $content = curl_exec($this->hCurl);
         $infos = curl_getinfo($this->hCurl);
